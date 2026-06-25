@@ -117,6 +117,8 @@ export const getAllUsers = async (req, res) => {
 
     }
 
+
+
     // Role Filter
 
     if (role) {
@@ -169,6 +171,36 @@ export const getAllUsers = async (req, res) => {
 
       message: "Unable to fetch users."
 
+    });
+
+  }
+};
+
+export const getUserById = async (req, res) => {
+  try {
+
+    const user = await User.findById(req.params.id)
+      .select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to fetch user."
     });
 
   }

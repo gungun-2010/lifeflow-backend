@@ -2,7 +2,8 @@ import express from "express";
 
 import {
   getDashboardStats,
-  getAllUsers
+  getAllUsers,
+  getUserById
 } from "../controllers/adminController.js";
 
 const router = express.Router();
@@ -14,6 +15,11 @@ const router = express.Router();
 router.get(
   "/dashboard",
   getDashboardStats
+);
+
+router.get(
+  "/users/:id",
+  getUserById
 );
 
 // ======================================================
