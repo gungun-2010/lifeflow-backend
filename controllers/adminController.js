@@ -79,16 +79,84 @@ export const getDashboardStats = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
 
-    const users = await User.find()
+    const {
+      search = "",
+      role = "",
+      status = ""
+    } = req.query;
+
+    const query = {};
+
+    // Search
+    if (search) {
+
+      query.$or = [
+
+        {
+          name: {
+            $regex: search,
+            $options: "i"
+          }
+        },
+
+        {
+          email: {
+            $regex: search,
+            $options: "i"
+          }
+        },
+
+        {
+          phone: {
+            $regex: search,
+            $options: "i"
+          }
+        }
+
+      ];
+
+    }
+
+    // Role Filter
+
+    if (role) {
+
+      query.role = role;
+
+    }
+
+    // Status Filter
+
+    if (status === "active") {
+
+      query.isBlocked = false;
+
+    }
+
+    if (status === "blocked") {
+
+      query.isBlocked = true;
+
+    }
+
+    const users = await User.find(query)
+
       .select(
         "name email phone role location isBlocked isVerified createdAt"
       )
-      .sort({ createdAt: -1 });
+
+      .sort({
+        createdAt: -1
+      });
 
     res.status(200).json({
+
       success: true,
+
       count: users.length,
+
       users
+
     });
 
   } catch (error) {
@@ -96,11 +164,12 @@ export const getAllUsers = async (req, res) => {
     console.error(error);
 
     res.status(500).json({
+
       success: false,
+
       message: "Unable to fetch users."
+
     });
 
   }
 };
-
-
