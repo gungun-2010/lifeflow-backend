@@ -1,7 +1,8 @@
 import express from 'express';
 import Request from '../models/request.js';
 import Notification from '../models/Notification.js';
-import BloodRequest from '../models/BloodRequest.js'; 
+import BloodRequest from '../models/BloodRequest.js';
+import EmergencyRequest from '../models/EmergencyRequest.js';
 
 const router = express.Router();
 
@@ -15,23 +16,47 @@ router.use((req, res, next) => {
 // 1. ANALYTICS / STATS ROUTES
 // ==========================================
 
-router.get('/stats/demand', async (req, res) => {
+router.get("/stats/demand", async (req, res) => {
   try {
-    console.log("📊 Fetching Demand Stats...");
-    const stats = await BloodRequest.aggregate([
+    console.log("📊 Fetching Live Blood Demand Stats...");
+
+    const stats = await EmergencyRequest.aggregate([
+      {
+        $match: {
+          status: "open",
+        },
+      },
       {
         $group: {
-          _id: { $ifNull: ["$bloodType", "$bloodGroup"] }, 
-          totalUnits: { $sum: "$unitsNeeded" },
-          requestCount: { $sum: 1 }
-        }
+          _id: "$bloodGroup",
+          totalUnits: {
+            $sum: "$unitsNeeded",
+          },
+          requestCount: {
+            $sum: 1,
+          },
+        },
       },
-      { $sort: { totalUnits: -1 } }
+      {
+        $sort: {
+          totalUnits: -1,
+        },
+      },
     ]);
-    res.status(200).json({ success: true, stats });
+
+    console.log("📈 Stats:", stats);
+
+    res.status(200).json({
+      success: true,
+      stats,
+    });
   } catch (error) {
-    console.error("Stats Error:", error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.error("❌ Demand Stats Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 });
 
