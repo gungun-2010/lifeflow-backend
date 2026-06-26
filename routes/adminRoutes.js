@@ -3,10 +3,12 @@ import express from "express";
 import {
   getDashboardStats,
   getAllUsers,
-  getUserById
+  getUserById,
+  updateUser
 } from "../controllers/adminController.js";
 
 const router = express.Router();
+console.log("✅ adminRoutes.js loaded");
 
 // ======================================================
 // ADMIN DASHBOARD
@@ -22,6 +24,12 @@ router.get(
   getUserById
 );
 
+console.log("✅ Registering PUT /users/:id");
+
+router.put(
+    "/users/:id",
+    updateUser
+);
 // ======================================================
 // USER MANAGEMENT
 // ======================================================
