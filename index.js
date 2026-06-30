@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import aiRoutes from './routes/aiRoutes.js';
 
 import http from 'http';
 
@@ -191,6 +192,11 @@ app.use(
   "/api/notifications",
   notificationRoutes
 );
+
+app.use(
+  '/api/ai',
+   aiRoutes
+  );
 
 // ======================================================
 // SOCKET MIDDLEWARE
