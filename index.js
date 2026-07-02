@@ -22,6 +22,7 @@ from "./routes/analyticsRoutes.js";
 import notificationRoutes
 from "./models/routes/notificationRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import centerRoutes from "./routes/centerRoutes.js";
 
 dotenv.config();
 
@@ -244,6 +245,8 @@ app.use('/api/users', userRoutes);
 app.use("/api/hospital", hospitalRoutes);
 
 app.use("/api/admin", adminRoutes);
+
+app.use("/api/centers", centerRoutes);
 
 
 // ======================================================
